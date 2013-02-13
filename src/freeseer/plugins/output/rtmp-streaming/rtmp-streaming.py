@@ -80,9 +80,11 @@ class RTMPOutput(IOutput):
         bin.add(muxer)
         
         url = self.url
+        audio_codec = self.audio_codec
         
         if self.streaming_dest == STREAMING_DESTINATION_VALUES[1]:
             url = self.JUSTIN_URL + self.streaming_key
+            audio_codec = 'lame'
         
         # RTMP sink
         rtmpsink = gst.element_factory_make('rtmpsink', 'rtmpsink')
@@ -103,7 +105,7 @@ class RTMPOutput(IOutput):
             audiolevel.set_property('interval', 20000000)
             bin.add(audiolevel)
             
-            audiocodec = gst.element_factory_make(self.audio_codec, "audiocodec")
+            audiocodec = gst.element_factory_make(audio_codec, "audiocodec")
             # audiocodec.set_property("quality", float(self.audio_quality))
             bin.add(audiocodec)
             
@@ -139,7 +141,7 @@ class RTMPOutput(IOutput):
         # Link muxer to rtmpsink
         #
         gst.element_link_many(muxer, rtmpsink)
-        
+        print "BIN!!"
         return bin
     
     def set_metadata(self, data):
