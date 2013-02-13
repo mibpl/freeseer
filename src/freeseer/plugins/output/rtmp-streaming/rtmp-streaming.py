@@ -82,7 +82,7 @@ class RTMPOutput(IOutput):
         url = self.url
         audio_codec = self.audio_codec
         
-        if self.streaming_dest == STREAMING_DESTINATION_VALUES[1]:
+        if self.streaming_dest == self.STREAMING_DESTINATION_VALUES[1]:
             url = self.JUSTIN_URL + self.streaming_key
             audio_codec = 'lame'
         
@@ -169,10 +169,6 @@ class RTMPOutput(IOutput):
             self.audio_codec = self.plugman.get_plugin_option(self.CATEGORY, self.get_config_name(), "Audio Codec")
             self.streaming_key = self.plugman.get_plugin_option(self.CATEGORY, self.get_config_name(), "justin.tv Streaming Key")
             self.streaming_dest = self.plugman.get_plugin_option(self.CATEGORY, self.get_config_name(), "Streaming Destination")
-            if str(self.streaming_dest) in self.STREAMING_DESTINATION_VALUES:
-                index = min([i for i in range(len(self.STREAMING_DESTINATION_VALUES)) \
-                    if self.STREAMING_DESTINATION_VALUES[i] == self.streaming_dest])
-                self.combobox_streaming_dest.setCurrentIndex(index)
         except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
             self.plugman.set_plugin_option(self.CATEGORY, self.get_config_name(), "Stream URL", self.url)
             self.plugman.set_plugin_option(self.CATEGORY, self.get_config_name(), "Audio Quality", self.audio_quality)
@@ -371,6 +367,11 @@ class RTMPOutput(IOutput):
         self.streaming_dest = dest
         self.plugman.set_plugin_option(self.CATEGORY, self.get_config_name(), "Streaming Destination", str(self.streaming_dest))
         self.plugman.save()
+
+        if str(self.streaming_dest) in self.STREAMING_DESTINATION_VALUES:
+            index = min([i for i in range(len(self.STREAMING_DESTINATION_VALUES)) \
+                if self.STREAMING_DESTINATION_VALUES[i] == self.streaming_dest])
+            self.combobox_streaming_dest.setCurrentIndex(index)
 
         self.scroll_area.setWidget(None)
         self.scroll_area.setWidget(self.get_content_widget(self.streaming_dest))
